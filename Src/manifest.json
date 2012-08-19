@@ -1,0 +1,17 @@
+{
+    "name": "Better Google Tasks",
+    "version": "4.1",
+    "description": "Displays canvas view of tasks in popup and count from ALL lists in taskbar. Allows user to select default task list",
+    "background_page": "html/background.html",
+    "browser_action": {
+        "default_icon": "images/icon.png",
+        "default_popup": "html/tasks.html",
+        "default_title": ""
+    },
+    "icons": {
+        "128": "images/icon.png"
+    },
+    "permissions": [ "notifications", "tabs", "http://*.google.com/", "https://*.google.com/" ],
+    "options_page": "html/options.html",
+    "update_url": "http://clients2.google.com/service/update2/crx"
+}

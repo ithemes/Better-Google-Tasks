@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Better Google Tasks Options</title>
+        <script type="text/javascript" src="/js/jquery-1.5.2.js">
+        </script>
+        <script type="text/javascript" src="/js/main.js">
+        </script>
+        <script type="text/javascript" src="/js/options.js">
+        </script>
+        <link type="text/css" rel="stylesheet" media="all" href="/css/style.css" />
+        <style type="text/css">
+            body {
+                background-color: #6BACCF;
+            }
+        </style>
+    </head>
+    <body onload="restoreOptions()">
+        <div id="wrapper">
+            <h1><img src="/images/icon.png" height="32" width="32" alt="Better Google Tasks Options" />Better Google Tasks Options</h1>
+            <div id="opcontent">
+                <form name="opform" action="#">
+                    <h2>Default Task List</h2>
+                    <div class="formcomp">
+                        <select name="default_list" id="lists">
+                        </select>
+                        <br/>
+                    </div>
+                    <h2>Popup View</h2>
+                    <div class="formcomp">
+                        <label>
+                            <input type="radio" name="default_pop" value="full" />Show full (canvas) view
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="default_pop" value="min" />Show minimal view
+                        </label>
+                        <br/>
+                    </div>
+                    <h2>Popup Dimensions</h2>
+                    <div class="formcomp">
+						Width: <input type="text" name="default_width" value="" size="4" />px<br />
+						Height: <input type="text" name="default_height" value="" size="4" />px
+                        <br/>
+                    </div>
+                    <h2>Tasks Due Dates To Count</h2>
+                    <div class="formcomp">
+                        <label>
+                            <input type="radio" name="default_count" value="all" />Count all tasks
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="default_count" value="past" />Count tasks that are past due
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="default_count" value="today" />Only count tasks due today
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="default_count" value="presentpast" />Count all past due tasks and tasks due today
+                        </label>
+                        <br />
+                        <label>
+                            <input type="radio" name="default_count" value="future" />Count all tasks with due dates set (past, present, future)
+                        </label>
+                        <br />
+                        <label>
+                            <input type="radio" name="default_count" value="none" />Don't show task count
+                        </label>
+                        <br/>
+                        <br />
+                        <label>
+                            <input type="checkbox" name="hide_zero" value="1" />Hide badge when count = 0
+                        </label>
+                        <br/>
+                    </div>
+                    <h2>Task Lists to Count</h2>
+                    <div class="formcomp">
+                        <label>
+                            <input type="radio" name="count_list" value="all" />Show tasks from all lists
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="count_list" value="def" />Only show tasks from default list
+                        </label>
+                        <br/>
+                    </div>
+                    <h2>Notifications</h2>
+                    <div class="formcomp">
+                        <label>
+                            <input type="radio" name="notify" value="0" />Do Not Show Notifications
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="notify" value="1" />Show notifications only for past due tasks
+                        </label>
+                        <br />
+                        <label>
+                            <input type="radio" name="notify" value="2" />Show notifications for past due tasks AND tasks due today
+                        </label>
+                        <br/>
+                    </div>
+                    <h2>Task Count Refresh Interval</h2>
+                    <div class="formcomp">
+                        <input type="text" name="countinterval" value="" size="4" /> Minutes<br />
+                        <span class="note">Automatic refresh time. Useful to synchronize task count when tasks are updated via other devices or sites.</span>
+                        <br/>
+                    </div>
+                    <h2>Open Behavior</h2>
+                    <div class="formcomp">
+                        <p>The follow handles how the extension will open tasks using the "Open in New Tab" or "Open in New Window" button at the bottom of the tasks popup.</p>
+                        <label>
+                            <input type="radio" name="openbehavior" value="0" />Open in New Tab
+                        </label>
+                        <br/>
+                        <label>
+                            <input type="radio" name="openbehavior" value="1" />Open in New Window
+                        </label>
+                        <br />
+                    </div>
+                    <div class="formcomp savebutton">
+                        <input type="button" name="saveButton" value="Save" onclick="saveOptions();"/> <input type="button" name="saveButton" value="Reset" onclick="resetOptions();"/>
+                    </div>
+                    <div id="saved">
+						Options Saved
+                    </div>
+                </form>
+            </div>
+            <div id="opfooter">
+                <p>
+					If you find this extension useful please consider supporting it. Any amount will help.
+                </p>
+                <form action="https://www.paypal.com/cgi-bin/webscr" method="post">
+					<input type="hidden" name="cmd" value="_s-xclick">
+					<input type="hidden" name="hosted_button_id" value="BZCMV5MSV6JP8">
+					<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+					<img alt="" border="0" src="https://www.paypalobjects.com/en_US/i/scr/pixel.gif" width="1" height="1">
+			</form>
+            </div>
+            <div id="closure">
+                <p>
+					Version 4.1 - September 20, 2011 - <a href="http://bit51.com/software/better-google-tasks/" target="_blank">Home and Support</a>
+                </p>
+            </div>
+        </div>
+    </body>
+</html>

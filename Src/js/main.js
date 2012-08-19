@@ -1,0 +1,13 @@
+var TASKS_URL = 'https://mail.google.com/tasks/canvas';
+var TASKS_COUNT = 'all';
+var TASKS_COUNTINTERVAL = 60;
+var TASKS_TITLE = 'Tasks Remaining: ';
+var TASKS_URL_RE_ = /https?\:\/\/mail.google.com\/tasks\/*/;
+var TASKS_DEFAULT_LIST = '';
+var TASKS_POPUP = 'full';
+var TASKS_LIST = 'all';
+var TASKS_WIDTH = '700';
+var TASKS_HEIGHT = '400';
+var TASKS_NOTIFY = '0';
+var TASKS_ZERO = '0';
+var TASKS_OPENBEHAVIOR = '0';

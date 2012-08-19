@@ -1,0 +1,23 @@
+<html>
+    <head>
+        <title>Better Google Tasks</title>
+        <script type="text/javascript" src="/js/main.js"></script>
+        <script type="text/javascript" src="/js/tasks.js"> </script>
+        <link type="text/css" rel="stylesheet" media="all" href="/css/style.css" />
+    </head>
+    <body onload="getTaskFrame()">
+        <div id="content">
+        </div>
+        <div id="footer">
+            <script type="text/javascript">
+                var openbehavior = localStorage.getItem('com.bit51.chrome.bettertasks.openbehavior') || TASKS_OPENBEHAVIOR;
+                if (openbehavior == '1') {
+                    document.write('<span class="link" onclick="openTasks();">Open in New Window <img src="/images/external.png" alt="Open tasks in a new window" /></span>');
+                } else {
+                    document.write('<span class="link" onclick="openTasks();">Open in New Tab <img src="/images/external.png" alt="Open tasks in a new tab" /></span>');
+                }
+            </script>
+        	 | <span class="link" onclick="printTasks();">Print</span> | <span class="link" onclick="chrome.tabs.create({url:chrome.extension.getURL('/html/options.html')});">Options</span> | <span class="link" onclick="closeTasks();">Close</span>
+        </div>
+    </body>
+</html>
