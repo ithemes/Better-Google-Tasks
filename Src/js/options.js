@@ -4,6 +4,14 @@ $( document ).ready( function() {
 
 	$( '#extVersion' ).prepend( localStorage.getItem( 'com.bit51.chrome.bettertasks.version' ) );
 
+	$( '#saveOptions' ).click( function() {
+		saveOptions();
+	} );
+
+	$( '#resetOptions' ).click( function() {
+		resetOptions();
+	} );
+
 } );
 
 function restoreOptions() {

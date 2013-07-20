@@ -1,78 +1,99 @@
-chrome.browserAction.onClicked.addListener(function(tab) {
-	var default_count = localStorage.getItem('com.bit51.chrome.bettertasks.default_count') || TASKS_COUNT;
-	var countinterval = localStorage.getItem('com.bit51.chrome.bettertasks.countinterval') || TASKS_COUNTINTERVAL;
+chrome.browserAction.onClicked.addListener( function( tab ) {
+
+	var default_count = localStorage.getItem( 'com.bit51.chrome.bettertasks.default_count' ) || TASKS_COUNT;
+	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettertasks.countinterval' ) || TASKS_COUNTINTERVAL;
 	var url = TASKS_URL;
-});
+
+} );
 
 var countText = 0;
 
-getManifest(function(manifest) {
-	localStorage.setItem("com.bit51.chrome.bettertasks.version", manifest.version);
-});
+getManifest( function( manifest ) {
+	localStorage.setItem( 'com.bit51.chrome.bettertasks.version', manifest.version );
+} );
 
-localStorage.setItem('com.bit51.chrome.bettertasks.checkExp',0);
+localStorage.setItem( 'com.bit51.chrome.bettertasks.checkExp', 0 );
 
-function getManifest(callback) {
+function getManifest( callback ) {
+
 	var xhr = new XMLHttpRequest();
+
 	xhr.onload = function() {
-		callback(JSON.parse(xhr.responseText));
+		callback( JSON.parse( xhr.responseText ) );
 	};
-	xhr.open('GET', '/manifest.json', true);
-	xhr.send(null);
+
+	xhr.open( 'GET', '/manifest.json', true );
+	xhr.send( null );
+
 }
 
 function incrCount() {
+
 	countText++;
 	return countText;
+
 }
 
 function getCount() {
+
 	return countText;
+
 }
 
 function resetCount() {
+
 	countText = 0;
+
 }
 
 function updateTask() {
-	var default_count = localStorage.getItem('com.bit51.chrome.bettertasks.default_count') || TASKS_COUNT;
-	if (default_count != 'none') {
-		var today = new Date;
+
+	var default_count = localStorage.getItem( 'com.bit51.chrome.bettertasks.default_count' ) || TASKS_COUNT;
+
+	if ( default_count != 'none' ) {
+
+		var today = new Date();
 		yy = today.getYear();
 		mm = today.getMonth() + 1;
 		dd = today.getDate();
-		if (yy < 2000) {
+
+		if ( yy < 2000 ) {
 			yy += 1900;
 		};
-		if (mm < 10) {
+
+		if ( mm < 10 ) {
 			mm = '0' + mm;
 		};
-		if (dd < 10) {
+
+		if ( dd < 10 ) {
 			dd = '0' + dd;
 		};
 
 		var today_ymd = yy.toString() + mm.toString() + dd.toString();
-		var countinterval = localStorage.getItem('com.bit51.chrome.bettertasks.countinterval') || TASKS_COUNTINTERVAL;
-		var count_list = localStorage.getItem('com.bit51.chrome.bettertasks.count_list') || TASKS_LIST;
-		var defaultlist = localStorage.getItem('com.bit51.chrome.bettertasks.default_list') || TASKS_DEFAULT_LIST;
+		var countinterval = localStorage.getItem( 'com.bit51.chrome.bettertasks.countinterval' ) || TASKS_COUNTINTERVAL;
+		var count_list = localStorage.getItem( 'com.bit51.chrome.bettertasks.count_list' ) || TASKS_LIST;
+		var defaultlist = localStorage.getItem( 'com.bit51.chrome.bettertasks.default_list' ) || TASKS_DEFAULT_LIST;
 		var murl = 'https://mail.google.com/tasks/m';
 		var url = 'https://mail.google.com/tasks/ig?listid=';
 		var mult = 1000 * 60;
 		var updateTaskInterval = countinterval * mult;
 
-		$.ajax({
+		$.ajax( {
+
 			type: 'GET',
 			url: murl,
 			data: null,
 			dataType: 'html',
-			success: function(html, listids) {
-				if (html.indexOf('<form method="GET" action="https://mail.google.com/tasks/m">') != -1) {
+			success: function( html, listids ) {
+
+				if (html.indexOf( '<form method="GET" action="https://mail.google.com/tasks/m">' ) != -1) {
+
 					resetCount();
 					var listids = [];
 					var startpos, strlength, str, currid, i;
 					str = html;
 					strlength = str.length;
-					startpos = str.indexOf("<option value=");
+					startpos = str.indexOf( "<option value=" );
 					i = 0;
 
 					while (strlength > 0 && startpos > -1) {
