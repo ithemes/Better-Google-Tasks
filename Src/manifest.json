@@ -1,8 +1,16 @@
 {
     "name": "Better Google Tasks",
-    "version": "4.1",
+    "version": "5",
     "description": "Displays canvas view of tasks in popup and count from ALL lists in taskbar. Allows user to select default task list",
-    "background_page": "html/background.html",
+    "manifest_version": 2,
+    "background": {
+        "scripts": [
+            "js/jquery-1.5.2.js",
+            "js/main.js",
+            "js/background.js"
+        ],
+        "persistent": false
+    },
     "browser_action": {
         "default_icon": "images/icon.png",
         "default_popup": "html/tasks.html",
