@@ -1,3 +1,9 @@
+$( document ).ready( function() {
+
+    restoreOptions();
+
+} );
+
 function restoreOptions() {
 	var hide_zero = localStorage
 			.getItem('com.bit51.chrome.bettertasks.hide_zero')
