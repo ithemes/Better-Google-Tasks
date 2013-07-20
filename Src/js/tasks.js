@@ -1,3 +1,17 @@
+$( document ).ready( function() {
+
+    var openbehavior = localStorage.getItem('com.bit51.chrome.bettertasks.openbehavior') || TASKS_OPENBEHAVIOR;
+
+    if (openbehavior == '1') {
+        $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Window <img src="/images/external.png" alt="Open tasks in a new window" /></span>' );
+    } else {
+        $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Tab <img src="/images/external.png" alt="Open tasks in a new tab" /></span>' );
+    }
+
+    getTaskFrame();
+
+} );
+
 function getTasksTab(callback) {
 	chrome.tabs.getAllInWindow(undefined, function(tabs) {
 		for ( var i = 0, tab; tab = tabs[i]; i++) {
@@ -9,6 +23,12 @@ function getTasksTab(callback) {
 
 		callback(null);
 	});
+}
+
+function behaviorLink() {
+
+
+
 }
 
 function openTasks() {
