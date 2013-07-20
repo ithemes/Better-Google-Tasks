@@ -1,5 +1,7 @@
 $( document ).ready( function() {
 
+    getTaskFrame();
+
     var openbehavior = localStorage.getItem('com.bit51.chrome.bettertasks.openbehavior') || TASKS_OPENBEHAVIOR;
 
     if (openbehavior == '1') {
@@ -8,7 +10,17 @@ $( document ).ready( function() {
         $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Tab <img src="/images/external.png" alt="Open tasks in a new tab" /></span>' );
     }
 
-    getTaskFrame();
+    $( '#printLink' ).click( function() {
+        printTasks();
+    } );
+
+    $( '#optionsLink' ).click( function() {
+        chrome.tabs.create( { url:chrome.extension.getURL( '/html/options.html' ) } );
+    } );
+
+    $( '#closeLink' ).click( function() {
+        closeTasks();
+    } );
 
 } );
 
