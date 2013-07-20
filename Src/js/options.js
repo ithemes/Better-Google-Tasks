@@ -1,6 +1,8 @@
 $( document ).ready( function() {
 
-    restoreOptions();
+	restoreOptions();
+
+	$( '#extVersion' ).prepend( localStorage.getItem( 'com.bit51.chrome.bettertasks.version' ) );
 
 } );
 
@@ -44,7 +46,6 @@ function restoreOptions() {
 	$('input[name=openbehavior]').val([ openbehavior ]);
 
 	getLists();
-	defaultcounttype();
 }
 
 function saveOptions() {
