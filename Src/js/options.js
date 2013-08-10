@@ -2,7 +2,7 @@ $( document ).ready( function() {
 
 	restoreOptions();
 
-	$( '#extVersion' ).prepend( localStorage.getItem( 'com.bit51.chrome.bettertasks.version' ) );
+	$( '#extVersion' ).prepend( localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.version' ) );
 
 	$( '#saveOptions' ).click( function() {
 		saveOptions();
@@ -16,31 +16,31 @@ $( document ).ready( function() {
 
 function restoreOptions() {
 	var hide_zero = localStorage
-			.getItem('com.bit51.chrome.bettertasks.hide_zero')
+			.getItem('com.bit51.chrome.bettergoogletasks.hide_zero')
 			|| TASKS_ZERO;
 	var default_count = localStorage
-			.getItem('com.bit51.chrome.bettertasks.default_count')
+			.getItem('com.bit51.chrome.bettergoogletasks.default_count')
 			|| TASKS_COUNT;
 	var countinterval = localStorage
-			.getItem('com.bit51.chrome.bettertasks.countinterval')
+			.getItem('com.bit51.chrome.bettergoogletasks.countinterval')
 			|| TASKS_COUNTINTERVAL;
 	var count_list = localStorage
-			.getItem('com.bit51.chrome.bettertasks.count_list')
+			.getItem('com.bit51.chrome.bettergoogletasks.count_list')
 			|| TASKS_LIST;
 	var default_pop = localStorage
-			.getItem('com.bit51.chrome.bettertasks.default_pop')
+			.getItem('com.bit51.chrome.bettergoogletasks.default_pop')
 			|| TASKS_POPUP;
 	var default_width = localStorage
-			.getItem('com.bit51.chrome.bettertasks.default_width')
+			.getItem('com.bit51.chrome.bettergoogletasks.default_width')
 			|| TASKS_WIDTH;
 	var default_height = localStorage
-			.getItem('com.bit51.chrome.bettertasks.default_height')
+			.getItem('com.bit51.chrome.bettergoogletasks.default_height')
 			|| TASKS_HEIGHT;
 	var notify = localStorage
-			.getItem('com.bit51.chrome.bettertasks.notify')
+			.getItem('com.bit51.chrome.bettergoogletasks.notify')
 			|| TASKS_NOTIFY;
 	var openbehavior = localStorage
-			.getItem('com.bit51.chrome.bettertasks.openbehavior')
+			.getItem('com.bit51.chrome.bettergoogletasks.openbehavior')
 			|| TASKS_OPENBEHAVIOR;
 
 	$('input[name=hide_zero]').val([ hide_zero ]);
@@ -68,16 +68,16 @@ function saveOptions() {
 	var notify = $('input[name=notify]:checked').val() || TASKS_NOTIFY;
 	var openbehavior = $('input[name=openbehavior]:checked').val() || TASKS_OPENBEHAVIOR;
 
-	localStorage.setItem('com.bit51.chrome.bettertasks.default_count',default_count);
-	localStorage.setItem('com.bit51.chrome.bettertasks.hide_zero',hide_zero);
-	localStorage.setItem('com.bit51.chrome.bettertasks.default_list',default_list);
-	localStorage.setItem('com.bit51.chrome.bettertasks.countinterval',countinterval);
-	localStorage.setItem('com.bit51.chrome.bettertasks.default_pop',default_pop);
-	localStorage.setItem('com.bit51.chrome.bettertasks.count_list',count_list);
-	localStorage.setItem('com.bit51.chrome.bettertasks.default_width',default_width);
-	localStorage.setItem('com.bit51.chrome.bettertasks.default_height',default_height);
-	localStorage.setItem('com.bit51.chrome.bettertasks.notify', notify);
-	localStorage.setItem('com.bit51.chrome.bettertasks.openbehavior',openbehavior);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.default_count',default_count);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.hide_zero',hide_zero);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.default_list',default_list);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.countinterval',countinterval);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.default_pop',default_pop);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.count_list',count_list);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.default_width',default_width);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.default_height',default_height);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.notify', notify);
+	localStorage.setItem('com.bit51.chrome.bettergoogletasks.openbehavior',openbehavior);
 
 	var port = chrome.extension.connect({
 		name : "BGT"
@@ -102,7 +102,7 @@ function getLists() {
 				dataType : 'html',
 				success : function(html) {
 					var defaultlist = localStorage
-							.getItem('com.bit51.chrome.bettertasks.default_list')
+							.getItem('com.bit51.chrome.bettergoogletasks.default_list')
 							|| TASKS_DEFAULT_LIST;
 					var listids = [];
 					var listtitles = [];
@@ -166,16 +166,16 @@ function setSelectByValue(formName, elemName, defVal) {
 }
 
 function resetOptions() {
-	localStorage.removeItem('com.bit51.chrome.bettertasks.default_count');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.hide_zero');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.default_list');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.countinterval');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.default_pop');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.count_list');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.default_width');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.default_height');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.notify');
-	localStorage.removeItem('com.bit51.chrome.bettertasks.openbehavior');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_count');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.hide_zero');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_list');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.countinterval');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_pop');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.count_list');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_width');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_height');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.notify');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.openbehavior');
 
 	var port = chrome.extension.connect({
 		name : "BGT"

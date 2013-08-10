@@ -2,7 +2,7 @@ $( document ).ready( function() {
 
     getTaskFrame();
 
-    var openbehavior = localStorage.getItem('com.bit51.chrome.bettertasks.openbehavior') || TASKS_OPENBEHAVIOR;
+    var openbehavior = localStorage.getItem('com.bit51.chrome.bettergoogletasks.openbehavior') || TASKS_OPENBEHAVIOR;
 
     if (openbehavior == '1') {
         $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Window <img src="/images/external.png" alt="Open tasks in a new window" /></span>' );
@@ -44,8 +44,8 @@ function behaviorLink() {
 }
 
 function openTasks() {
-	var openbehavior = localStorage.getItem('com.bit51.chrome.bettertasks.openbehavior') || TASKS_OPENBEHAVIOR;
-	var defaultlist = localStorage.getItem('com.bit51.chrome.bettertasks.default_list') || TASKS_DEFAULT_LIST;
+	var openbehavior = localStorage.getItem('com.bit51.chrome.bettergoogletasks.openbehavior') || TASKS_OPENBEHAVIOR;
+	var defaultlist = localStorage.getItem('com.bit51.chrome.bettergoogletasks.default_list') || TASKS_DEFAULT_LIST;
 
 	if (openbehavior == '1') {
 		if (defaultlist != '') {
@@ -104,10 +104,10 @@ function getTaskFrame() {
 	});
 
 	var address;
-	var defaultlist = localStorage.getItem('com.bit51.chrome.bettertasks.default_list') || TASKS_DEFAULT_LIST;
-	var default_pop = localStorage.getItem('com.bit51.chrome.bettertasks.default_pop') || TASKS_POPUP;
-	var default_width = localStorage.getItem('com.bit51.chrome.bettertasks.default_width') || TASKS_WIDTH;
-	var default_height = localStorage.getItem('com.bit51.chrome.bettertasks.default_height') || TASKS_HEIGHT;
+	var defaultlist = localStorage.getItem('com.bit51.chrome.bettergoogletasks.default_list') || TASKS_DEFAULT_LIST;
+	var default_pop = localStorage.getItem('com.bit51.chrome.bettergoogletasks.default_pop') || TASKS_POPUP;
+	var default_width = localStorage.getItem('com.bit51.chrome.bettergoogletasks.default_width') || TASKS_WIDTH;
+	var default_height = localStorage.getItem('com.bit51.chrome.bettergoogletasksJSON.parseeval.default_height') || TASKS_HEIGHT;
 	if (default_pop == 'full') {
 		address = 'https://mail.google.com/tasks/canvas';
 	} else {
