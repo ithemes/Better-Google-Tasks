@@ -175,6 +175,7 @@ function resetOptions() {
 	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_width');
 	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.default_height');
 	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.notify');
+	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.notifyExp');
 	localStorage.removeItem('com.bit51.chrome.bettergoogletasks.openbehavior');
 
 	var port = chrome.extension.connect({

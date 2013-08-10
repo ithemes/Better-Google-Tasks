@@ -7,6 +7,7 @@
         "scripts": [
             "js/jquery-2.0.3.min.js",
             "js/main.js",
+	        "js/utilities.js",
             "js/background.js"
         ],
         "persistent": false
@@ -19,7 +20,11 @@
     "icons": {
         "128": "images/icon.png"
     },
-    "permissions": [ "notifications", "tabs", "http://*.google.com/", "https://*.google.com/" ],
+    "permissions": [
+	    "notifications",
+	    "tabs",
+	    "https://mail.google.com/"
+    ],
     "options_page": "html/options.html",
     "update_url": "http://clients2.google.com/service/update2/crx"
 }
