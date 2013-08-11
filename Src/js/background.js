@@ -28,4 +28,3 @@ chrome.extension.onConnect.addListener( function( port ) {
 //update badge and notifications
 updateBadge();
 getNotifications();
-
