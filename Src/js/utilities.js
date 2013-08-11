@@ -355,3 +355,15 @@ function todaysDate() {
 	return yy.toString() + mm.toString() + dd.toString();
 
 }
+
+function inOpen() {
+	var port = chrome.extension.getViews({
+		type: "popup"
+	});
+
+	if ( port.length > 0 ) {
+		window.setTimeout( function() { inOpen(); }, 5000 );
+	} else {
+		updateTasks();
+	}
+}

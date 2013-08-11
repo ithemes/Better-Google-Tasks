@@ -5,10 +5,14 @@ $( document ).ready( function() {
     var openbehavior = localStorage.getItem('com.bit51.chrome.bettergoogletasks.openbehavior') || TASKS_OPENBEHAVIOR;
 
     if (openbehavior == '1') {
-        $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Window <img src="/images/external.png" alt="Open tasks in a new window" /></span>' );
+        $( '#footer' ).prepend( '<span id="windowLink" class="link">Open in New Window <img src="/images/external.png" alt="Open tasks in a new window" /></span> | ' );
     } else {
-        $( '#footer' ).prepend( '<span class="link" onclick="openTasks();">Open in New Tab <img src="/images/external.png" alt="Open tasks in a new tab" /></span>' );
+        $( '#footer' ).prepend( '<span id="windowLink" class="link">Open in New Tab <img src="/images/external.png" alt="Open tasks in a new tab" /></span> | ' );
     }
+
+	$( '#windowLink' ).click( function() {
+		openTasks();
+	} );
 
     $( '#printLink' ).click( function() {
         printTasks();
@@ -37,22 +41,19 @@ function getTasksTab(callback) {
 	});
 }
 
-function behaviorLink() {
-
-
-
-}
-
 function openTasks() {
+
 	var openbehavior = localStorage.getItem('com.bit51.chrome.bettergoogletasks.openbehavior') || TASKS_OPENBEHAVIOR;
 	var defaultlist = localStorage.getItem('com.bit51.chrome.bettergoogletasks.default_list') || TASKS_DEFAULT_LIST;
 
 	if (openbehavior == '1') {
+
 		if (defaultlist != '') {
 			chrome.windows.create({
 				url : "https://mail.google.com/tasks/canvas?listid=" + defaultlist
 			});
 		} else {
+			alert(openbehavior);
 			chrome.windows.create({
 				url : "https://mail.google.com/tasks/canvas"
 			});
@@ -70,6 +71,7 @@ function openTasks() {
 	}
 
 	window.close();
+
 }
 
 function printTasks() {

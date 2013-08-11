@@ -26,4 +26,3 @@ chrome.extension.onConnect.addListener( function( port ) {
 updateBadge();
 getNotifications();
 
-//alert( 'Task Count = ' + badgeCount + ', Due Today = '+ tasksDueToday + ', Overdue = ' + tasksOverdue );

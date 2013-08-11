@@ -1,4 +1,9 @@
+$( document ).ready( function() {
 
+	$( 'body').append( getPrint() );
+
+
+} );
 
 function getPrint() {
 
@@ -66,7 +71,7 @@ function getPrint() {
                     success: function(html) {
 					
                         if (html.match(/_setup\((.*)\)\}/)) {
-                            var data = eval('(' + RegExp.$1 + ')');
+	                        var data = JSON.parse( RegExp.$1 );
                             var odd = false;
                             $.each(data.t.tasks, function(i, val) {
                                 if (odd) {
