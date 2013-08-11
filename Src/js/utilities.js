@@ -130,6 +130,7 @@ function updateData() {
 
 					if ( listCount === taskLists.length ) {
 						updateBadge();
+						getNotifications();
 					} else {
 
 						chrome.extension.getBackgroundPage();
@@ -345,80 +346,83 @@ function updateBadge() {
  */
 function getNotifications() {
 
-	var notify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.notify' ) || TASKS_NOTIFY; //The user selected option for notifications
+	var lastNotify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.last_notify' ) || new Date().getTime(); //the time of the last update
 
-	if ( notify > 0 ) {
+	if ( lastNotify < ( new Date().getTime() - ( 1000 * 60 * 60 * 12 ) ) ) {
 
-		var ttitle, primaryMessage;
+		var notify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.notify' ) || TASKS_NOTIFY; //The user selected option for notifications
 
-		if ( tasksDueToday > 0 || tasksOverdue > 0 ) {
+		if ( notify > 0 ) {
 
-			if ( tasksDueToday > 0 && tasksOverdue > 0 ) {
+			var ttitle, primaryMessage;
 
-				if ( tasksDueToday > 1 ) {
-					var dtt = 'Tasks';
-					var dtm = 'tasks';
+			if ( tasksDueToday > 0 || tasksOverdue > 0 ) {
+
+				if ( tasksDueToday > 0 && tasksOverdue > 0 ) {
+
+					if ( tasksDueToday > 1 ) {
+						var dtt = 'Tasks';
+						var dtm = 'tasks';
+					} else {
+						var dtt = 'Task';
+						var dtm = 'task';
+					}
+
+					if ( tasksOverdue > 1 ) {
+						var odt = 'Tasks';
+						var odm = 'tasks';
+					} else {
+						var odt = 'Task';
+						var odm = 'task';
+					}
+
+					ttitle = 'Overdue ' + odt + ' and ' + dtt + ' Due Today';
+					primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + ' & ' + tasksDueToday + ' ' + dtm + ' due today.';
+
+				} else if ( tasksDueToday > 0 ) {
+
+					if ( tasksDueToday > 1 ) {
+						var dtt = 'Tasks';
+						var dtm = 'tasks';
+					} else {
+						var dtt = 'Task';
+						var dtm = 'task';
+					}
+
+					ttitle = dtt + ' Due Today';
+					primaryMessage = 'You have ' + tasksDueToday + ' ' + dtm + ' due today.';
+
 				} else {
-					var dtt = 'Task';
-					var dtm = 'task';
+
+					if ( tasksOverdue > 1 ) {
+						var odt = 'Tasks';
+						var odm = 'tasks';
+					} else {
+						var odt = 'Task';
+						var odm = 'task';
+					}
+
+					ttitle = 'Overdue ' + odt;
+					primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + '.';
+
 				}
-
-				if ( tasksOverdue > 1 ) {
-					var odt = 'Tasks';
-					var odm = 'tasks';
-				} else {
-					var odt = 'Task';
-					var odm = 'task';
-				}
-
-				ttitle = 'Overdue ' + odt + ' and ' + dtt + ' Due Today';
-				primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + ' & ' + tasksDueToday + ' ' + dtm + ' due today.';
-
-			} else if ( tasksDueToday > 0 ) {
-
-				if ( tasksDueToday > 1 ) {
-					var dtt = 'Tasks';
-					var dtm = 'tasks';
-				} else {
-					var dtt = 'Task';
-					var dtm = 'task';
-				}
-
-				ttitle = dtt + ' Due Today';
-				primaryMessage = 'You have ' + tasksDueToday + ' ' + dtm + ' due today.';
-
-			} else {
-
-				if ( tasksOverdue > 1 ) {
-					var odt = 'Tasks';
-					var odm = 'tasks';
-				} else {
-					var odt = 'Task';
-					var odm = 'task';
-				}
-
-				ttitle = 'Overdue ' + odt;
-				primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + '.';
 
 			}
 
-		}
+			var notificationOptions = {
+				type: 'basic',
+				title: ttitle,
+				message: primaryMessage,
+				iconUrl: '/images/icon.png',
+			}
 
-		var notificationOptions = {
-			type: 'basic',
-			title: ttitle,
-			message: primaryMessage,
-			iconUrl: '/images/icon.png',
-		}
+			chrome.notifications.create( 'BGT', notificationOptions, function () {} );
 
-		chrome.notifications.create( 'BGT', notificationOptions, function () {
-		} );
+		}
 
 	}
 
-	window.setTimeout( function () {
-		updateTasks();
-	}, ( 1000 * 60 * 60 * 12 ) );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.last_notify', new Date().getTime() );
 
 }
 

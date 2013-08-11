@@ -19,6 +19,8 @@ $( document ).ready( function() {
  */
 function loadOptions() {
 
+	var taskLists = chrome.extension.getBackgroundPage().taskLists;
+
 	var hide_zero = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.hide_zero' ) || TASKS_ZERO;
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT;
 	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL;
@@ -39,8 +41,6 @@ function loadOptions() {
 	$( 'input[name=default_height]' ).val( default_height );
 	$( 'input[name=notify]' ).val( [notify] );
 	$( 'input[name=openbehavior]' ).val( [openbehavior] );
-
-	getTasks( true );
 
 	for ( var i = 0; i < taskLists.length; i++ ) {
 

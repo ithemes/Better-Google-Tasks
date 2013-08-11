@@ -1,3 +1,5 @@
+localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.last_notify' );
+
 //Initialize the extension
 updateData();
 
