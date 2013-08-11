@@ -23,6 +23,7 @@
     "permissions": [
 	    "notifications",
 	    "tabs",
+	    "storage",
 	    "https://mail.google.com/"
     ],
     "options_page": "html/options.html",

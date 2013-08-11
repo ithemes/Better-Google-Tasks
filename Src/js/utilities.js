@@ -1,3 +1,8 @@
+var taskLists = new Array(); //array of google tasks lists
+var badgeCount = 0; //Number of tasks to display in the badge
+var tasksDueToday = 0; //Number of tasks due today
+var tasksOverdue = 0; //Number of overdue tasks
+
 /**
  *  Retrieves the manifest file for use in the extension
  *
@@ -18,27 +23,31 @@ function getManifest( callback ) {
 
 /**
  * Gets task counts from Google server
+ *
+ * @param bool returnLists whether to return the list of task lists
+ * @return array[mixed] list of task lists if returnLists = true
  */
-function getTasks() {
+function getTasks( getLists ) {
 
-	var tasklistIDs = new Array();
+	var returnLists = typeof( getLists ) !== 'undefined' ? getLists : false;
+
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
 
-	 $.ajax( {
+	  $.ajax( {
 		async:      false,
 		type:       'GET',
 		url:        'https://mail.google.com/tasks/m',
 		data:       null,
 		dataType:   'html',
 		error:      function() {
-			tasklistIDs = null;
+			taskLists = null;
 		},
 		success:    function( html ) {
 
 			//make sure we have a tasks form to parse
 			if ( html.indexOf( '<form method="GET" action="https://mail.google.com/tasks/m">' ) != -1 ) {
 
-				var startpos, strlength, str, currid, i;
+				var startpos, strlength, str, currid, currtitle, i;
 
 				str = html;
 				strlength = html.length;
@@ -47,16 +56,19 @@ function getTasks() {
 
 				while ( strlength > 0 && startpos > -1 ) {
 
-					html = html.substr( startpos + 15, strlength );
-					currid = html.substr( 0, html.indexOf( "\"" ) );
-					strlength = html.length;
-					startpos = html.indexOf( "<option value=" );
+					str = str.substr( startpos + 15, strlength );
+					strlength = str.length;
+					currid = str.substr( 0, str.indexOf( "\"" ) );
+					str = str.substr(str.indexOf(">") + 1, strlength);
+					currtitle = str.substr(0, str.indexOf("</option>"));
+					strlength = str.length;
+					startpos = str.indexOf( "<option value=" );
 
-					if ( tasklistIDs.length > 0 ) {
+					if ( taskLists.length > 0 ) {
 
-						for ( var j = 0; j < tasklistIDs.length; j++ ) {
+						for ( var j = 0; j < taskLists.length; j++ ) {
 
-							if ( tasklistIDs[j] == currid ) {
+							if ( taskLists[j].id == currid ) {
 								currid = -1;
 							}
 
@@ -64,13 +76,14 @@ function getTasks() {
 
 					} else {
 
-						tasklistIDs[i] = currid;
+						taskLists[i] = { "id": currid, "title": currtitle };
 
 					}
 
 					if ( currid != -1 ) {
 
-						tasklistIDs[i] = currid;
+						taskLists[i] =  { "id": currid, "title": currtitle };;
+	
 					}
 
 					i++;
@@ -79,7 +92,7 @@ function getTasks() {
 
 			} else {
 
-				tasklistIDs =  -1;
+				taskLists =  -1;
 
 			}
 
@@ -87,13 +100,15 @@ function getTasks() {
 
 	} );
 
-	if ( tasklistIDs !== null && tasklistIDs.length > 0 ) {
+	if ( returnLists === false && taskLists !== null && taskLists !== -1 && taskLists.length > 0 ) {
+		
+		var todays_date = todaysDate();
 
-		for ( var j = 0; j < tasklistIDs.length; j++ ) {
+		for ( var j = 0; j < taskLists.length; j++ ) {
 
 			$.ajax( {
 				type:       'GET',
-				url:        'https://mail.google.com/tasks/ig?listid=' + tasklistIDs[j],
+				url:        'https://mail.google.com/tasks/ig?listid=' + taskLists[j].id,
 				data:       null,
 				async:      false,
 				dataType:   'html',
@@ -107,15 +122,15 @@ function getTasks() {
 
 							if (( val.name.length > 0 || ( val.notes && val.notes.length > 0 ) || ( val.task_date && val.task_date.length > 0 ) ) && val.completed == false ) {
 
-								if ( default_count == 'all' || ( default_count == 'today' && val.task_date == today_ymd ) || ( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( today_ymd ) ) || ( default_count == 'future' && parseInt( val.task_date ) >= parseInt( today_ymd )) || ( default_count == 'past' && parseInt( val.task_date ) < parseInt( today_ymd ) ) ) {
+								if ( default_count == 'all' || ( default_count == 'today' && val.task_date == todays_date ) || ( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) || ( default_count == 'future' && parseInt( val.task_date ) >= parseInt( todays_date )) || ( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ) {
 									badgeCount++;
 								}
 
-								if ( parseInt( val.task_date ) < parseInt( todaysDate() ) ) {
+								if ( parseInt( val.task_date ) < parseInt( todays_date ) ) {
 									tasksOverdue++;
 								}
 
-								if ( parseInt( val.task_date ) == parseInt( todaysDate() ) ) {
+								if ( parseInt( val.task_date ) == parseInt( todays_date ) ) {
 									tasksDueToday++;
 								}
 
@@ -132,6 +147,181 @@ function getTasks() {
 		}
 
 	}
+
+}
+
+function updateBadge() {
+
+	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
+	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
+	var updateTaskInterval = countinterval * ( 1000 * 60 );
+
+	if ( default_count != 'none' ) {
+
+		badgeCount = 0;
+
+		getTasks();
+
+		if ( taskLists === -1 ) { //task lists are invalid. User probably isn't logged in.
+
+			//Set the badge color to grey
+			chrome.browserAction.setBadgeBackgroundColor( {
+				color: [200, 200, 200, 153]
+			} );
+
+			//display an "X" in badge count
+			chrome.browserAction.setBadgeText( {
+				text: 'X'
+			} );
+
+			//set the badge popup to let the user know they're not logged in
+			chrome.browserAction.setTitle( {
+				title: 'Better Google Tasks - Not Logged In'
+			} );
+
+			window.setTimeout( function() { updateTasks(); }, 10000 );
+
+		} else { //update the badge accordingly
+
+			if ( badgeCount > 0 ) { //there are tasks
+
+				//make the badge red to show unfinished tasks
+				chrome.browserAction.setBadgeBackgroundColor( {
+					color: [153, 0, 0, 153]
+				} );
+
+				//push the task count to the badge
+				chrome.browserAction.setBadgeText( {
+					text: badgeCount.toString()
+				} );
+
+				//set the badge popup title to number of tasks
+				chrome.browserAction.setTitle( {
+					title: TASKS_TITLE + badgeCount.toString()
+				} );
+
+			} else { //there are no tasks
+
+				var hide_zero = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.hide_zero' ) || TASKS_ZERO; //do we hide the zero count or not
+
+				//set badge color to zero
+				chrome.browserAction.setBadgeBackgroundColor( {
+					color: [0, 0, 255, 153]
+				} );
+
+				//set badge popup title to something neutral
+				chrome.browserAction.setTitle( {
+					title: 'Google Tasks'
+				} );
+
+				if ( hide_zero == '0' ) { //we're supposed to set the badge count
+
+					chrome.browserAction.setBadgeText( {
+						text: '0'
+					} );
+
+				} else { //delete the badge count
+
+					chrome.browserAction.setBadgeText( {
+						text: ''
+					} );
+
+				}
+
+			}
+
+		}
+
+	} else { //the user doesn't want a badge
+
+		//delete the badge text by setting to en empty string
+		chrome.browserAction.setBadgeText( {
+			text: ''
+		} );
+
+		//set a neutral title
+		chrome.browserAction.setTitle( {
+			title: 'Google Tasks'
+		} );
+	}
+
+	window.setTimeout( function() { updateTasks(); }, updateTaskInterval );
+
+}
+
+function getNotifications() {
+
+	var notify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.notify' ) || TASKS_NOTIFY; //The user selected option for notifications
+
+	if ( notify > 0 ) {
+
+		var ttitle, primaryMessage;
+
+		if ( tasksDueToday > 0 || tasksOverdue > 0 ) {
+
+			if ( tasksDueToday > 0 && tasksOverdue > 0 ) {
+
+				if ( tasksDueToday > 1 ) {
+					var dtt = 'Tasks';
+					var dtm = 'tasks';
+				} else {
+					var dtt = 'Task';
+					var dtm = 'task';
+				}
+
+				if ( tasksOverdue > 1 ) {
+					var odt = 'Tasks';
+					var odm = 'tasks';
+				} else {
+					var odt = 'Task';
+					var odm = 'task';
+				}
+
+				ttitle = 'Overdue ' + odt + ' and ' + dtt + ' Due Today';
+				primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + ' & ' + tasksDueToday + ' ' + dtm + ' due today.';
+
+			} else if ( tasksDueToday > 0 ) {
+
+				if ( tasksDueToday > 1 ) {
+					var dtt = 'Tasks';
+					var dtm = 'tasks';
+				} else {
+					var dtt = 'Task';
+					var dtm = 'task';
+				}
+
+				ttitle = dtt + ' Due Today';
+				primaryMessage = 'You have ' + tasksDueToday + ' ' + dtm + ' due today.';
+
+			} else {
+
+				if ( tasksOverdue > 1 ) {
+					var odt = 'Tasks';
+					var odm = 'tasks';
+				} else {
+					var odt = 'Task';
+					var odm = 'task';
+				}
+
+				ttitle = 'Overdue ' + odt;
+				primaryMessage = 'You have ' + tasksOverdue + ' overdue ' + odm + '.';
+
+			}
+
+		}
+
+		var notificationOptions = {
+			type:       'basic',
+			title:      ttitle,
+			message:    primaryMessage,
+			iconUrl:    '/images/icon.png',
+		}
+
+		chrome.notifications.create( 'BGT', notificationOptions, function() {} );
+
+	}
+
+	window.setTimeout( function() { updateTasks(); }, ( 1000 * 60 * 60 * 12 ) );
 
 }
 
