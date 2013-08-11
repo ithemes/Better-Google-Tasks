@@ -150,6 +150,9 @@ function getTasks( getLists ) {
 
 }
 
+/**
+ * Update the badge count
+ */
 function updateBadge() {
 
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
@@ -249,6 +252,9 @@ function updateBadge() {
 
 }
 
+/**
+ * Setup notifications
+ */
 function getNotifications() {
 
 	var notify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.notify' ) || TASKS_NOTIFY; //The user selected option for notifications

@@ -4,6 +4,10 @@ body {
 	padding: 0;
 }
 
+body.options-body {
+	background-color: #215a6f;
+}
+
 #content {
 	float: left;
 	margin: 0;
@@ -34,14 +38,24 @@ body {
 	margin: 10px auto 10px auto;
 	padding: 0 0 0 10px;
 	width: 80%;
+	max-width: 800px;
 }
 
 h1 {
-	font-size: 150%;
-	margin: 0;
+	color: #fff;
+	display: block;
+	font-size: 200%;
+	margin: 0 auto 0 auto;
+	height: 32px;
+	width: 500px;
 	padding: 10px 0 10px 0;
 	text-align: center;
-	width: 100%;
+	background: url('../images/icon.png') no-repeat top right;
+	background-size: contain;
+}
+
+h1 > img {
+	top: -5px;
 }
 
 h2 {
@@ -82,10 +96,13 @@ h2 {
 }
 
 #opfooter {
+	background-color: #D5FFDF;
+	border: 1px solid #ccc;
 	display: block;
 	margin: 0 auto 0 auto;
+	padding: 0 0 10px 0;
 	text-align: center;
-	width: 50%;
+	width: 80%;
 }
 
 #closure, #closure a:active, #closure a:link, #closure a:visited {

@@ -3,6 +3,7 @@ getManifest( function( manifest ) {
 	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.version', manifest.version );
 } );
 
+//Set up the appropriate listeners
 chrome.extension.onConnect.addListener( function( port ) {
 
 	console.assert( port.name == "BGT" );
@@ -23,6 +24,8 @@ chrome.extension.onConnect.addListener( function( port ) {
 
 } );
 
+
+//update badge and notifications
 updateBadge();
 getNotifications();
 

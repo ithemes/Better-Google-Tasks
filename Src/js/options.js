@@ -1,6 +1,6 @@
 $( document ).ready( function() {
 
-	restoreOptions();
+	loadOptions();
 
 	$( '#extVersion' ).prepend( localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.version' ) );
 
@@ -14,7 +14,10 @@ $( document ).ready( function() {
 
 } );
 
-function restoreOptions() {
+/**
+ * Load options into support form
+ */
+function loadOptions() {
 
 	var hide_zero = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.hide_zero' ) || TASKS_ZERO;
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT;
@@ -54,56 +57,78 @@ function restoreOptions() {
 	setSelectByValue( 'opform', 'default_list', default_list );
 }
 
+/**
+ * Save all options
+ */
 function saveOptions() {
 	
-	var default_count = $('input[name=default_count]:checked' ).val() || TASKS_COUNT;
-	var hide_zero = $('input[name=hide_zero]:checked' ).val() || TASKS_ZERO;
-	var default_pop = $('input[name=default_pop]:checked' ).val() || TASKS_POPUP;
-	var count_list = $('input[name=count_list]:checked' ).val() || TASKS_LIST;
-	var countinterval = $('input[name=countinterval]' ).val() || TASKS_COUNTINTERVAL;
-	var default_list = $('select[name=default_list]' ).val() || TASKS_DEFAULT_LIST;
-	var default_width = $('input[name=default_width]' ).val() || TASKS_WIDTH;
-	var default_height = $('input[name=default_height]' ).val() || TASKS_HEIGHT;
-	var notify = $('input[name=notify]:checked' ).val() || TASKS_NOTIFY;
-	var openbehavior = $('input[name=openbehavior]:checked' ).val() || TASKS_OPENBEHAVIOR;
+	var default_count = $( 'input[name=default_count]:checked' ).val() || TASKS_COUNT;
+	var hide_zero = $( 'input[name=hide_zero]:checked' ).val() || TASKS_ZERO;
+	var default_pop = $( 'input[name=default_pop]:checked' ).val() || TASKS_POPUP;
+	var count_list = $( 'input[name=count_list]:checked' ).val() || TASKS_LIST;
+	var countinterval = $( 'input[name=countinterval]' ).val() || TASKS_COUNTINTERVAL;
+	var default_list = $( 'select[name=default_list]' ).val() || TASKS_DEFAULT_LIST;
+	var default_width = $( 'input[name=default_width]' ).val() || TASKS_WIDTH;
+	var default_height = $( 'input[name=default_height]' ).val() || TASKS_HEIGHT;
+	var notify = $( 'input[name=notify]:checked' ).val() || TASKS_NOTIFY;
+	var openbehavior = $( 'input[name=openbehavior]:checked' ).val() || TASKS_OPENBEHAVIOR;
 
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_count',default_count);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.hide_zero',hide_zero);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_list',default_list);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.countinterval',countinterval);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_pop',default_pop);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.count_list',count_list);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_width',default_width);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_height',default_height);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.notify', notify);
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.openbehavior',openbehavior);
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_count', default_count );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.hide_zero', hide_zero );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_list', default_list );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.countinterval', countinterval );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_pop', default_pop );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.count_list', count_list );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_width', default_width );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.default_height', default_height );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.notify', notify );
+	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.openbehavior', openbehavior );
 
-	var port = chrome.extension.connect({
+	var port = chrome.extension.connect( {
 		name : "BGT"
-	});
-	port.postMessage({
-		message : "Update"
-	});
+	} );
 
-	$("div#saved").fadeIn("slow");
-	$("div#saved").fadeOut("slow");
+	port.postMessage( {
+		message : "Update"
+	} );
+
+	$( "div#saved" ).fadeIn( "slow" );
+	$( "div#saved" ).fadeOut( "slow" );
 }
 
+/**
+ * Select default list
+ *
+ * @param formName
+ * @param elemName
+ * @param defVal
+ * @returns {boolean}
+ */
 function setSelectByValue( formName, elemName, defVal ) {
-	var combo = document.forms[formName].elements[elemName], rv = false;
 
-	if (combo.type == 'select-one' ) {
-		for ( var i = 0; i < combo.options.length
-				&& combo.options[i].value != defVal; i++)
-			;
-		if (rv = (i != combo.options.length))
+	var
+		combo = document.forms[formName].elements[elemName],
+		rv = false;
+
+	if ( combo.type == 'select-one' ) {
+
+		for ( var i = 0; i < combo.options.length && combo.options[i].value != defVal; i++ );
+
+		if ( rv = ( i != combo.options.length ) ) {
 			combo.selectedIndex = i;
+		}
+
 	}
 
 	return rv;
+
 }
 
+/**
+ * reset uptions to default
+ */
 function resetOptions() {
+
 	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.default_count' );
 	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.hide_zero' );
 	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.default_list' );
@@ -116,11 +141,14 @@ function resetOptions() {
 	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.notifyExp' );
 	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.openbehavior' );
 
-	var port = chrome.extension.connect({
+	var port = chrome.extension.connect( {
 		name : "BGT"
-	});
-	port.postMessage({
+	} );
+
+	port.postMessage( {
 		message : "Update"
-	});
+	} );
+
 	window.close();
+
 }
