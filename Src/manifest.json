@@ -23,7 +23,7 @@
     "permissions": [
 	    "notifications",
 	    "tabs",
-	    "https://mail.google.com/",
+	    "https://mail.google.com/"
     ],
     "options_page": "html/options.html",
     "update_url": "http://clients2.google.com/service/update2/crx"
