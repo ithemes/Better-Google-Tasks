@@ -1,7 +1,9 @@
-var taskLists = new Array(); //array of google tasks lists
+var taskLists = null; //array of google tasks lists
+var tasks = null; //Array of individual tasks
 var badgeCount = 0; //Number of tasks to display in the badge
 var tasksDueToday = 0; //Number of tasks due today
 var tasksOverdue = 0; //Number of overdue tasks
+var listCount = 0; //number of lists parsed
 
 /**
  *  Retrieves the manifest file for use in the extension
@@ -12,7 +14,7 @@ function getManifest( callback ) {
 
 	var xhr = new XMLHttpRequest();
 
-	xhr.onload = function() {
+	xhr.onload = function () {
 		callback( JSON.parse( xhr.responseText ) );
 	};
 
@@ -22,16 +24,13 @@ function getManifest( callback ) {
 }
 
 /**
- * Gets task counts from Google server
- *
- * @param bool returnLists whether to return the list of task lists
- * @return array[mixed] list of task lists if returnLists = true
+ * Gets task and objects counts from Google server
  */
-function getTasks( getLists ) {
-
-	var returnLists = typeof( getLists ) !== 'undefined' ? getLists : false;
+function updateData() {
 
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
+	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
+	var updateTaskInterval = countinterval * ( 1000 * 60 );
 
 	//Set the badge color to grey
 	chrome.browserAction.setBadgeBackgroundColor( {
@@ -48,19 +47,18 @@ function getTasks( getLists ) {
 		title: 'Loading Google Tasks'
 	} );
 
-	  $.ajax( {
-		async:      false,
-		type:       'GET',
-		url:        'https://mail.google.com/tasks/m',
-		data:        null,
-		dataType:   'html',
-		error:      function() {
-			taskLists = null;
-		},
-		success:    function( html ) {
+	var xhr = new XMLHttpRequest();
+
+	xhr.onreadystatechange = function () {
+
+		if ( xhr.readyState === 4 && xhr.status === 200 ) { //success
+
+			taskLists = new Array();
+
+			var html = xhr.responseText;
 
 			//make sure we have a tasks form to parse
-			if ( html.indexOf( '<form method="GET" action="https://mail.google.com/tasks/m">' ) != -1 ) {
+			if ( html.indexOf( '<form method="GET" action="https://mail.google.com/tasks/m">' ) != - 1 ) {
 
 				var startpos, strlength, str, currid, currtitle, i;
 
@@ -69,22 +67,22 @@ function getTasks( getLists ) {
 				startpos = html.indexOf( "<option value=" );
 				i = 0;
 
-				while ( strlength > 0 && startpos > -1 ) {
+				while ( strlength > 0 && startpos > - 1 ) {
 
 					str = str.substr( startpos + 15, strlength );
 					strlength = str.length;
 					currid = str.substr( 0, str.indexOf( "\"" ) );
-					str = str.substr(str.indexOf(">") + 1, strlength);
-					currtitle = str.substr(0, str.indexOf("</option>"));
+					str = str.substr( str.indexOf( ">" ) + 1, strlength );
+					currtitle = str.substr( 0, str.indexOf( "</option>" ) );
 					strlength = str.length;
 					startpos = str.indexOf( "<option value=" );
 
 					if ( taskLists.length > 0 ) {
 
-						for ( var j = 0; j < taskLists.length; j++ ) {
+						for ( var j = 0; j < taskLists.length; j ++ ) {
 
 							if ( taskLists[j].id == currid ) {
-								currid = -1;
+								currid = - 1;
 							}
 
 						}
@@ -95,105 +93,50 @@ function getTasks( getLists ) {
 
 					}
 
-					if ( currid != -1 ) {
+					if ( currid != - 1 ) {
 
-						taskLists[i] =  { "id": currid, "title": currtitle };;
+						taskLists[i] = { "id": currid, "title": currtitle };
+						;
 
 					}
 
-					i++;
+					i ++;
 
 				}
-
-			} else {
-
-				taskLists =  -1;
 
 			}
 
-		}
+			if ( taskLists !== null && taskLists.length > 0 ) {
 
-	} );
+				tasks = new Array();
 
-	if ( returnLists === false && taskLists !== null && taskLists !== -1 && taskLists.length > 0 ) {
+				listCount = 0;
 
-		var todays_date = todaysDate();
+				for ( var j = 0; j < taskLists.length; j ++ ) {
 
-		for ( var j = 0; j < taskLists.length; j++ ) {
-
-			$.ajax( {
-				type:       'GET',
-				url:        'https://mail.google.com/tasks/ig?listid=' + taskLists[j].id,
-				data:       null,
-				async:      false,
-				dataType:   'html',
-				success:    function( html ) {
-
-					if ( html.match( /_setup\((.*)\)\}/ ) ) {
-
-						var data = JSON.parse( RegExp.$1 );
-
-						$.each( data.t.tasks, function( i, val ) {
-
-							if (( val.name.length > 0 || ( val.notes && val.notes.length > 0 ) || ( val.task_date && val.task_date.length > 0 ) ) && val.completed == false ) {
-
-								if (
-									default_count == 'all' ||
-										( default_count == 'today' && val.task_date == todays_date ) ||
-										( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ||
-										( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) ||
-										( default_count == 'alldates' && val.task_date.length > 0 )
-									) {
-									badgeCount ++;
-								}
-
-								if ( parseInt( val.task_date ) < parseInt( todays_date ) ) {
-									tasksOverdue++;
-								}
-
-								if ( parseInt( val.task_date ) == parseInt( todays_date ) ) {
-									tasksDueToday++;
-								}
-
-							}
-
-						} );
-
-					}
+					getTasks( taskLists[j] );
 
 				}
 
-			} );
+				function checkComplete() {
 
-		}
+					if ( listCount === taskLists.length ) {
+						console.log( 'Done: ' + listCount );
+						updateBadge();
+					}
 
-	}
+					window.setTimeout( function () {
+						checkComplete();
+					}, 1000 );
 
-}
 
-function initializeBGT() {
+				}
 
-	updateBadge();
-	getNotifications();
+				checkComplete();
 
-}
+			}
 
-/**
- * Update the badge count
- */
-function updateBadge() {
-
-	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
-	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
-	var updateTaskInterval = countinterval * ( 1000 * 60 );
-
-	if ( default_count != 'none' ) {
-
-		badgeCount = 0;
-
-		getTasks();
-
-		if ( taskLists === -1 ) { //task lists are invalid. User probably isn't logged in.
+		} else if ( xhr.readyState === 4 && xhr.status !== 200 ) { //status isn't 200: user probably not logged in
 
 			//Set the badge color to grey
 			chrome.browserAction.setBadgeBackgroundColor( {
@@ -210,7 +153,116 @@ function updateBadge() {
 				title: 'Better Google Tasks - Not Logged In'
 			} );
 
-			window.setTimeout( function() { updateTasks(); }, 10000 );
+			xhr.abort();
+			window.setTimeout( function() { updateData(); }, 5000 );
+
+		}
+
+	}
+
+	xhr.open( 'GET', 'https://mail.google.com/tasks/m', true );
+	xhr.timeout = 5000;
+	xhr.send( null );
+
+	window.setTimeout( function () { updateData(); }, updateTaskInterval );
+
+}
+
+/**
+ * Get individual tasks
+ * @param array list array of task lists
+ */
+function getTasks( list ) {
+
+	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
+	var todays_date = todaysDate();
+
+	var xhr = new XMLHttpRequest();
+
+	xhr.onreadystatechange = function () {
+
+		if ( xhr.readyState === 4 && xhr.status === 200 ) { //success
+
+			var html = xhr.responseText;
+
+			if ( html.match( /_setup\((.*)\)\}/ ) ) {
+
+				var data = JSON.parse( RegExp.$1 );
+
+				$.each( data.t.tasks, function ( i, val ) {
+
+
+					if ( ( val.name.length > 0 || ( val.notes && val.notes.length > 0 ) || ( val.task_date && val.task_date.length > 0 ) ) && val.completed == false ) {
+
+						tasks.push( val );
+
+						if (
+							default_count == 'all' ||
+								( default_count == 'today' && val.task_date == todays_date ) ||
+								( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ||
+								( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) ||
+								( default_count == 'alldates' && val.task_date.length > 0 )
+							) {
+							badgeCount ++;
+						}
+
+						if ( parseInt( val.task_date ) < parseInt( todays_date ) ) {
+							tasksOverdue ++;
+						}
+
+						if ( parseInt( val.task_date ) == parseInt( todays_date ) ) {
+							tasksDueToday ++;
+						}
+
+					}
+
+				} );
+
+			}
+
+			listCount++;
+
+		} else if ( xhr.readyState === 4 && xhr.status !== 200 ) { //status isn't 200: user probably not logged in
+			alert( 'no good' );
+		}
+
+	}
+
+	xhr.open( 'GET', 'https://mail.google.com/tasks/ig?listid=' + list.id, true );
+	xhr.timeout = 5000;
+	xhr.send( null );
+
+}
+
+/**
+ * Update the badge count
+ */
+function updateBadge() {
+
+	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
+
+	if ( default_count != 'none' ) {
+
+		if ( taskLists === null ) { //task lists are invalid. User probably isn't logged in.
+
+			//Set the badge color to grey
+			chrome.browserAction.setBadgeBackgroundColor( {
+				color: [200, 200, 200, 153]
+			} );
+
+			//display an "X" in badge count
+			chrome.browserAction.setBadgeText( {
+				text: 'X'
+			} );
+
+			//set the badge popup to let the user know they're not logged in
+			chrome.browserAction.setTitle( {
+				title: 'Better Google Tasks - Not Logged In'
+			} );
+
+			window.setTimeout( function () {
+				updateTasks();
+			}, 10000 );
 
 		} else { //update the badge accordingly
 
@@ -275,8 +327,6 @@ function updateBadge() {
 			title: 'Google Tasks'
 		} );
 	}
-
-	window.setTimeout( function() { updateTasks(); }, updateTaskInterval );
 
 }
 
@@ -345,17 +395,20 @@ function getNotifications() {
 		}
 
 		var notificationOptions = {
-			type:       'basic',
-			title:      ttitle,
-			message:    primaryMessage,
-			iconUrl:    '/images/icon.png',
+			type: 'basic',
+			title: ttitle,
+			message: primaryMessage,
+			iconUrl: '/images/icon.png',
 		}
 
-		chrome.notifications.create( 'BGT', notificationOptions, function() {} );
+		chrome.notifications.create( 'BGT', notificationOptions, function () {
+		} );
 
 	}
 
-	window.setTimeout( function() { updateTasks(); }, ( 1000 * 60 * 60 * 12 ) );
+	window.setTimeout( function () {
+		updateTasks();
+	}, ( 1000 * 60 * 60 * 12 ) );
 
 }
 
@@ -374,29 +427,34 @@ function todaysDate() {
 	//y2k safe... really?
 	if ( yy < 2000 ) {
 		yy += 1900;
-	};
+	}
+	;
 
 	//pad the month
 	if ( mm < 10 ) {
 		mm = '0' + mm;
-	};
+	}
+	;
 
 	//pad the day
 	if ( dd < 10 ) {
 		dd = '0' + dd;
-	};
+	}
+	;
 
 	return yy.toString() + mm.toString() + dd.toString();
 
 }
 
 function inOpen() {
-	var port = chrome.extension.getViews({
+	var port = chrome.extension.getViews( {
 		type: "popup"
-	});
+	} );
 
 	if ( port.length > 0 ) {
-		window.setTimeout( function() { inOpen(); }, 5000 );
+		window.setTimeout( function () {
+			inOpen();
+		}, 5000 );
 	} else {
 		updateBadge();
 	}

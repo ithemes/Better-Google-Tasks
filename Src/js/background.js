@@ -1,5 +1,5 @@
 //Initialize the extension
-initializeBGT();
+updateData();
 
 //Set the extension version
 getManifest( function( manifest ) {
