@@ -32,6 +32,12 @@ function updateData() {
 	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
 	var updateTaskInterval = countinterval * ( 1000 * 60 );
 
+	badgeCount = 0;
+	tasksDueToday = 0;
+	tasksOverdue = 0;
+	tasks = null;
+	taskLists = null;
+
 	//Set the badge color to grey
 	chrome.browserAction.setBadgeBackgroundColor( {
 		color: [200, 200, 200, 153]
@@ -50,6 +56,8 @@ function updateData() {
 	var xhr = new XMLHttpRequest();
 
 	xhr.onreadystatechange = function () {
+
+		console.log( xhr );
 
 		if ( xhr.readyState === 4 && xhr.status === 200 ) { //success
 
@@ -121,14 +129,16 @@ function updateData() {
 				function checkComplete() {
 
 					if ( listCount === taskLists.length ) {
-						console.log( 'Done: ' + listCount );
 						updateBadge();
+					} else {
+
+						chrome.extension.getBackgroundPage();
+
+						window.setTimeout( function () {
+							checkComplete();
+						}, 1000 );
+
 					}
-
-					window.setTimeout( function () {
-						checkComplete();
-					}, 1000 );
-
 
 				}
 
@@ -153,18 +163,21 @@ function updateData() {
 				title: 'Better Google Tasks - Not Logged In'
 			} );
 
-			xhr.abort();
-			window.setTimeout( function() { updateData(); }, 5000 );
+			window.setTimeout( function () {
+				updateData();
+			}, 5000 );
 
 		}
 
 	}
 
-	xhr.open( 'GET', 'https://mail.google.com/tasks/m', true );
+	xhr.open( 'GET', 'https://mail.google.com/tasks/m?pli=1&cache=' + Math.random(), true );
 	xhr.timeout = 5000;
 	xhr.send( null );
 
-	window.setTimeout( function () { updateData(); }, updateTaskInterval );
+	window.setTimeout( function () {
+		updateData();
+	}, updateTaskInterval );
 
 }
 
@@ -190,7 +203,6 @@ function getTasks( list ) {
 				var data = JSON.parse( RegExp.$1 );
 
 				$.each( data.t.tasks, function ( i, val ) {
-
 
 					if ( ( val.name.length > 0 || ( val.notes && val.notes.length > 0 ) || ( val.task_date && val.task_date.length > 0 ) ) && val.completed == false ) {
 
@@ -220,10 +232,8 @@ function getTasks( list ) {
 
 			}
 
-			listCount++;
+			listCount ++;
 
-		} else if ( xhr.readyState === 4 && xhr.status !== 200 ) { //status isn't 200: user probably not logged in
-			alert( 'no good' );
 		}
 
 	}
@@ -456,6 +466,6 @@ function inOpen() {
 			inOpen();
 		}, 5000 );
 	} else {
-		updateBadge();
+		updateData();
 	}
 }

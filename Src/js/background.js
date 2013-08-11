@@ -15,7 +15,7 @@ chrome.extension.onConnect.addListener( function( port ) {
 
 		if ( msg.message == "Update" ) {
 
-			updateBadge();
+			updateData();
 
 		} else if ( msg.message == "Open" ) {
 
