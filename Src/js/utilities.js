@@ -370,6 +370,6 @@ function inOpen() {
 	if ( port.length > 0 ) {
 		window.setTimeout( function() { inOpen(); }, 5000 );
 	} else {
-		updateTasks();
+		updateBadge();
 	}
 }
