@@ -92,8 +92,8 @@ function saveOptions() {
 		message : "Update"
 	} );
 
-	$( "div#saved" ).fadeIn( "slow" );
-	$( "div#saved" ).fadeOut( "slow" );
+	$( "div#saved" ).fadeIn( "slow").delay( 500).fadeOut( "slow" );
+
 }
 
 /**

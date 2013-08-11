@@ -33,11 +33,26 @@ function getTasks( getLists ) {
 
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
 
+	//Set the badge color to grey
+	chrome.browserAction.setBadgeBackgroundColor( {
+		color: [200, 200, 200, 153]
+	} );
+
+	//display an "X" in badge count
+	chrome.browserAction.setBadgeText( {
+		text: '...'
+	} );
+
+	//set the badge popup to let the user know they're not logged in
+	chrome.browserAction.setTitle( {
+		title: 'Loading Google Tasks'
+	} );
+
 	  $.ajax( {
 		async:      false,
 		type:       'GET',
 		url:        'https://mail.google.com/tasks/m',
-		data:       null,
+		data:        null,
 		dataType:   'html',
 		error:      function() {
 			taskLists = null;
@@ -83,7 +98,7 @@ function getTasks( getLists ) {
 					if ( currid != -1 ) {
 
 						taskLists[i] =  { "id": currid, "title": currtitle };;
-	
+
 					}
 
 					i++;
@@ -101,7 +116,7 @@ function getTasks( getLists ) {
 	} );
 
 	if ( returnLists === false && taskLists !== null && taskLists !== -1 && taskLists.length > 0 ) {
-		
+
 		var todays_date = todaysDate();
 
 		for ( var j = 0; j < taskLists.length; j++ ) {
@@ -122,8 +137,14 @@ function getTasks( getLists ) {
 
 							if (( val.name.length > 0 || ( val.notes && val.notes.length > 0 ) || ( val.task_date && val.task_date.length > 0 ) ) && val.completed == false ) {
 
-								if ( default_count == 'all' || ( default_count == 'today' && val.task_date == todays_date ) || ( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) || ( default_count == 'future' && parseInt( val.task_date ) >= parseInt( todays_date )) || ( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ) {
-									badgeCount++;
+								if (
+									default_count == 'all' ||
+										( default_count == 'today' && val.task_date == todays_date ) ||
+										( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ||
+										( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) ||
+										( default_count == 'alldates' && val.task_date.length > 0 )
+									) {
+									badgeCount ++;
 								}
 
 								if ( parseInt( val.task_date ) < parseInt( todays_date ) ) {
@@ -147,6 +168,13 @@ function getTasks( getLists ) {
 		}
 
 	}
+
+}
+
+function initializeBGT() {
+
+	updateBadge();
+	getNotifications();
 
 }
 

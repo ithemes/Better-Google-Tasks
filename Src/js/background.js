@@ -1,3 +1,6 @@
+//Initialize the extension
+initializeBGT();
+
 //Set the extension version
 getManifest( function( manifest ) {
 	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.version', manifest.version );
@@ -23,8 +26,3 @@ chrome.extension.onConnect.addListener( function( port ) {
 	} );
 
 } );
-
-
-//update badge and notifications
-updateBadge();
-getNotifications();

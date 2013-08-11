@@ -10,7 +10,7 @@
 	        "js/utilities.js",
             "js/background.js"
         ],
-        "persistent": false
+        "persistent": true
     },
     "browser_action": {
         "default_icon": "images/icon.png",
@@ -24,7 +24,8 @@
 	    "notifications",
 	    "tabs",
 	    "storage",
-	    "https://mail.google.com/"
+	    "https://mail.google.com/",
+	    "webRequest"
     ],
     "options_page": "html/options.html",
     "update_url": "http://clients2.google.com/service/update2/crx"
