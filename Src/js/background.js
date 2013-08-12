@@ -1,5 +1,7 @@
 $( document ).ready( function() {
 
+	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.last_notify' );
+
 	address = 'https://mail.google.com/tasks/m';
 
 	var frame = document.createElement( 'iframe' );

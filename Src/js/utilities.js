@@ -360,7 +360,8 @@ function updateBadge() {
  */
 function getNotifications() {
 
-	var lastNotify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.last_notify' ) || new Date().getTime(); //the time of the last update
+	var lastNotify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.last_notify' ) || 0; //the time of the last update
+	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.last_notify' );
 
 	if ( lastNotify < ( new Date().getTime() - ( 1000 * 60 * 60 * 12 ) ) ) {
 
@@ -435,9 +436,9 @@ function getNotifications() {
 
 		}
 
-	}
+		localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.last_notify', new Date().getTime() );
 
-	localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.last_notify', new Date().getTime() );
+	}
 
 }
 
