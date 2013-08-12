@@ -1,6 +1,6 @@
 {
     "name": "Better Google Tasks",
-    "version": "5.0.2",
+    "version": "5.0.3",
     "description": "Displays Google Tasks' full view in a popup and a task count from your default task list or all task lists in the taskbar.",
 	"author": "Bit51",
     "manifest_version": 2,

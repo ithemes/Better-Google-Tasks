@@ -57,8 +57,6 @@ function updateData() {
 
 	xhr.onreadystatechange = function () {
 
-		console.log( xhr );
-
 		if ( xhr.readyState === 4 && xhr.status === 200 ) { //success
 
 			taskLists = new Array();
