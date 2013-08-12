@@ -1,7 +1,18 @@
-localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.last_notify' );
+$( document ).ready( function() {
+
+	address = 'https://mail.google.com/tasks/m';
+
+	var frame = document.createElement( 'iframe' );
+
+	frame.setAttribute( 'src', address );
+	frame.setAttribute( 'id', 'tasksPage' );
+	document.getElementById( 'content' ).appendChild( frame );
+
+} );
 
 //Initialize the extension
 updateData();
+
 
 //Set the extension version
 getManifest( function( manifest ) {

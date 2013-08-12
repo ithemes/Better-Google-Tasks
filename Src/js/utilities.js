@@ -164,8 +164,10 @@ function updateData() {
 				title: 'Better Google Tasks - Not Logged In'
 			} );
 
+			address = 'https://mail.google.com/tasks/m';
+
 			window.setTimeout( function () {
-				updateData();
+				dataError();
 			}, 5000 );
 
 		}
@@ -179,6 +181,18 @@ function updateData() {
 	window.setTimeout( function () {
 		updateData();
 	}, updateTaskInterval );
+
+}
+
+function dataError() {
+
+	var frame = document.createElement( 'iframe' );
+
+	frame.setAttribute( 'src', address );
+	frame.setAttribute( 'id', 'tasksPage' );
+	$( '#tasksPage' ).replaceWith( frame );
+
+	updateData();
 
 }
 
@@ -416,7 +430,8 @@ function getNotifications() {
 				iconUrl: '/images/icon.png',
 			}
 
-			chrome.notifications.create( 'BGT', notificationOptions, function () {} );
+			chrome.notifications.create( 'BGT', notificationOptions, function () {
+			} );
 
 		}
 

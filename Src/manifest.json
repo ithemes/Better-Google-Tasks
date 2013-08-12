@@ -4,12 +4,7 @@
     "description": "Displays canvas view of tasks in popup and count from ALL lists in taskbar. Allows user to select default task list",
     "manifest_version": 2,
     "background": {
-        "scripts": [
-            "js/jquery-2.0.3.min.js",
-            "js/main.js",
-	        "js/utilities.js",
-            "js/background.js"
-        ]
+	    "page": "html/background.html"
     },
     "browser_action": {
         "default_icon": "images/icon.png",
