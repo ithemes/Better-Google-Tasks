@@ -228,7 +228,7 @@ function getTasks( list ) {
 								( default_count == 'today' && val.task_date == todays_date ) ||
 								( default_count == 'past' && parseInt( val.task_date ) < parseInt( todays_date ) ) ||
 								( default_count == 'presentpast' && parseInt( val.task_date ) <= parseInt( todays_date ) ) ||
-								( default_count == 'alldates' && val.task_date.length > 0 )
+								( default_count == 'alldates' && ( typeof val.task_date !== 'undefined' ) )
 							) {
 							badgeCount ++;
 						}
