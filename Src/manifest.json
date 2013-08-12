@@ -1,7 +1,7 @@
 {
-    "name": "Better Google Tasks",
+    "name": "Better Google Tasks\u2122",
     "version": "5.0",
-    "description": "Displays the Google Tasks canvas view in a popup and a task count from your default task list or all of your task lists in the taskbar. Users can choose their default task list from the lists of their primary Google account (the first account logged into).",
+    "description": "Displays Google Tasks' full view in a popup and a task count from your default task list or all task lists in the taskbar.",
 	"author": "Bit51",
     "manifest_version": 2,
     "background": {
