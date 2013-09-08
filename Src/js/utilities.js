@@ -359,11 +359,12 @@ function updateBadge() {
 function getNotifications() {
 
 	var lastNotify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.last_notify' ) || 0; //the time of the last update
-	localStorage.removeItem( 'com.bit51.chrome.bettergoogletasks.last_notify' );
 
 	if ( lastNotify < ( new Date().getTime() - ( 1000 * 60 * 60 * 12 ) ) ) {
 
 		var notify = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.notify' ) || TASKS_NOTIFY; //The user selected option for notifications
+
+        localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.last_notify', new Date().getTime() );
 
 		if ( notify > 0 ) {
 
@@ -429,12 +430,9 @@ function getNotifications() {
 				iconUrl: '/images/icon.png',
 			}
 
-			chrome.notifications.create( 'BGT', notificationOptions, function () {
-			} );
+			chrome.notifications.create( 'BGT', notificationOptions, function () {} );
 
 		}
-
-		localStorage.setItem( 'com.bit51.chrome.bettergoogletasks.last_notify', new Date().getTime() );
 
 	}
 
