@@ -29,7 +29,9 @@ function getManifest( callback ) {
 function updateData() {
 
 	var default_count = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_count' ) || TASKS_COUNT; //figure out how we should count tasks
-	var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
+    var countinterval = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.countinterval' ) || TASKS_COUNTINTERVAL; //interval to refresh the badge count
+    var count_list = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.count_list' ) || TASKS_LIST; //show only the lists they want
+    var default_list = localStorage.getItem( 'com.bit51.chrome.bettergoogletasks.default_list' ) || TASKS_DEFAULT_LIST; //The default tasks list
 	var updateTaskInterval = countinterval * ( 1000 * 60 );
 
 	badgeCount = 0;
@@ -83,30 +85,33 @@ function updateData() {
 					strlength = str.length;
 					startpos = str.indexOf( "<option value=" );
 
-					if ( taskLists.length > 0 ) {
+                    if ( ( count_list === 'def' && currid == default_list ) || count_list === 'all' ) {
 
-						for ( var j = 0; j < taskLists.length; j ++ ) {
+                        if ( taskLists.length > 0 ) {
 
-							if ( taskLists[j].id == currid ) {
-								currid = - 1;
-							}
+                            for ( var j = 0; j < taskLists.length; j ++ ) {
 
-						}
+                                if ( taskLists[j].id == currid ) {
+                                    currid = - 1;
+                                }
 
-					} else {
+                            }
 
-						taskLists[i] = { "id": currid, "title": currtitle };
+                        } else {
 
-					}
+                            taskLists[i] = { "id": currid, "title": currtitle };
 
-					if ( currid != - 1 ) {
+                        }
 
-						taskLists[i] = { "id": currid, "title": currtitle };
-						;
+                        if ( currid != - 1 ) {
 
-					}
+                            taskLists[i] = { "id": currid, "title": currtitle };
 
-					i ++;
+                        }
+
+                        i ++;
+
+                    }
 
 				}
 
